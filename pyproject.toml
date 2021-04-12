@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "cert-exporter"
+version = "0.1.0"
+description = "Prometheus exporter that monitors k8s certs expiration time"
+authors = ["Mikhail Senin <msenin94@gmail.com>"]
+license = "Apache 2.0"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+prometheus-client = "^0.10.1"
+pyOpenSSL = "^20.0.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+cert-exporter = 'cert_exporter.app:main'
