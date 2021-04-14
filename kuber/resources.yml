@@ -5,23 +5,23 @@ metadata:
   labels:
     app: k8s-cert-exporter
 spec:
+  externalTrafficPolicy: Cluster
+  type: LoadBalancer
   ports:
   - port: 8000
     name: web
-  clusterIP: None
+  # clusterIP: None
   selector:
     app: k8s-cert-exporter
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: DaemonSet
 metadata:
   name: k8s-cert-exporter
 spec:
   selector:
     matchLabels:
       app: k8s-cert-exporter # has to match .spec.template.metadata.labels
-  serviceName: k8s-cert-exporter
-  replicas: 3 # by default is 1
   template:
     metadata:
       labels:
@@ -48,3 +48,13 @@ spec:
         hostPath:
           path: /etc/kubernetes/pki/
           type: DirectoryOrCreate
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - k8s-cert-exporter
+            topologyKey: "kubernetes.io/hostname"
